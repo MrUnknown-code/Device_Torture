@@ -1,4 +1,5 @@
 // NOTE : ---------- THIS WILL KILL YOUR SYSTEM DO IT AT YOUR OWN RISK ------------
+// ONLY WORKS ON LINUX NOTE THAT
 //=================== THE FINAL BOSS ============================================
 
 #include <iostream>
